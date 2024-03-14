@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class UpdateRequestRequest extends FormRequest
+class IndexRequestRequest extends FormRequest
 {
 
     /**
@@ -15,7 +16,9 @@ class UpdateRequestRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'comment' => 'required|string',
+            'status' => Rule::in(['Active', 'Resolved']),
+            'from' => 'date',
+            'to' => 'date',
         ];
     }
 }
