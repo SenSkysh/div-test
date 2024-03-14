@@ -21,7 +21,12 @@ class RequestController extends Controller
      */
     public function store(StoreRequestRequest $request)
     {
-        //
+        $validated = $request->validated();
+
+        $newRequest = new Request($validated);
+
+        $newRequest->saveOrFail();
+        return $newRequest;
     }
     
     /**
