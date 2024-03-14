@@ -9,7 +9,7 @@ use App\Http\Requests\UpdateRequestRequest;
 use App\Http\Requests\IndexRequestRequest;
 
 use Illuminate\Http\Request as HttpRequest;
-use App\Http\Resources\Request as RequestResource;
+use App\Http\Resources\RequestResource;
 use Illuminate\Support\Facades\Mail;
 
 class RequestController extends Controller
@@ -20,7 +20,48 @@ class RequestController extends Controller
         $this->authorizeResource(Request::class);
     }
     /**
-     * Display a listing of the resource.
+     * @OA\Get(
+     *      path="/api/requests",
+     *      operationId="getRequestsList",
+     *      summary="Get list of requests",
+     *      description="Returns list of requests",
+     *      @OA\Parameter(
+     *          name="status",
+     *          in="query",
+     *          required=false,
+     *          description="Статус заявки",
+     *          @OA\Schema(
+     *              type="string"
+     *          ),
+     *     ),
+     *      @OA\Parameter(
+     *          name="from",
+     *          in="query",
+     *          required=false,
+     *          description="Начальная дата фильтрации",
+     *          @OA\Schema(
+     *              type="string"
+     *          ),
+     *     ),
+     *      @OA\Parameter(
+     *          name="to",
+     *          in="query",
+     *          required=false,
+     *          description="Конечная дата фильтрации",
+     *          @OA\Schema(
+     *              type="string"
+     *          ),
+     *     ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="array",
+     *                  @OA\Items(ref="#/components/schemas/RequestResource"))
+     *              ),
+     *          )
+     *      )
+     *     )
      */
     public function index(IndexRequestRequest $request)
     {
@@ -34,7 +75,19 @@ class RequestController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * @OA\Post(
+     *      path="/api/requests",
+     *      operationId="storeRequest",
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(ref="#/components/schemas/StoreRequestRequest")
+     *      ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/RequestResource")
+     *       )
+     * )
      */
     public function store(StoreRequestRequest $request)
     {
@@ -43,11 +96,29 @@ class RequestController extends Controller
         $newRequest = new Request($validated);
 
         $newRequest->saveOrFail();
+        $newRequest->refresh();
         return new RequestResource($newRequest);
     }
 
     /**
-     * Update the specified resource in storage.
+     * @OA\Put(
+     *      path="/api/requests/{id}",
+     *      operationId="updateRequest",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *     ),
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(ref="#/components/schemas/UpdateRequestRequest")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/RequestResource")
+     *       )
+     * )
      */
     public function update(UpdateRequestRequest $updateRequest, Request $request)
     {
@@ -56,6 +127,7 @@ class RequestController extends Controller
         $request->status = 'Resolved';
         $request->comment = $validated['comment'];
         $request->saveOrFail();
+        $request->refresh();
 
         // Mail::to($request->email)->send(new RequestResolved($request));
         Mail::mailer('log')->to($request->email)->send(new RequestResolved($request));

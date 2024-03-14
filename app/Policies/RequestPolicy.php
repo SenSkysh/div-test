@@ -13,6 +13,10 @@ class RequestPolicy
      */
     public function viewAny(?User $user): bool
     {
+        if(!isset($user)) {
+            $user = auth('sanctum')->user();
+        }
+        // return true;
         return isset($user);
     }
 
@@ -29,6 +33,10 @@ class RequestPolicy
      */
     public function update(?User $user, Request $request): bool
     {
+        if(!isset($user)) {
+            $user = auth('sanctum')->user();
+        }
+        // return true;
         return isset($user);
     }
 

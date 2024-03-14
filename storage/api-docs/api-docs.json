@@ -1,0 +1,254 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Laravel OpenApi",
+        "description": "L5 Swagger OpenApi description",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/sanctum/token": {
+            "post": {
+                "operationId": "getAuthToken",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    },
+                                    "device_name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/requests": {
+            "get": {
+                "summary": "Get list of requests",
+                "description": "Returns list of requests",
+                "operationId": "getRequestsList",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Статус заявки",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "description": "Начальная дата фильтрации",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "description": "Конечная дата фильтрации",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/RequestResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "operationId": "storeRequest",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreRequestRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RequestResource"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/requests/{id}": {
+            "put": {
+                "operationId": "updateRequest",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateRequestRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RequestResource"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "StoreRequestRequest": {
+                "title": "StoreRequestRequest",
+                "required": [
+                    "name",
+                    "email",
+                    "message"
+                ],
+                "properties": {
+                    "name": {
+                        "format": "string"
+                    },
+                    "email": {
+                        "format": "string"
+                    },
+                    "message": {
+                        "format": "string"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "StoreRequestRequest"
+                }
+            },
+            "UpdateRequestRequest": {
+                "title": "UpdateRequestRequest",
+                "required": [
+                    "comment"
+                ],
+                "properties": {
+                    "comment": {
+                        "format": "string"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "UpdateRequestRequest"
+                }
+            },
+            "RequestResource": {
+                "properties": {
+                    "id": {
+                        "description": "title=RequestResource,",
+                        "format": "int64"
+                    },
+                    "name": {
+                        "format": "string"
+                    },
+                    "email": {
+                        "format": "string"
+                    },
+                    "status": {
+                        "format": "string"
+                    },
+                    "message": {
+                        "format": "string"
+                    },
+                    "comment": {
+                        "format": "string"
+                    },
+                    "created_at": {
+                        "format": "string"
+                    },
+                    "updated_at": {
+                        "format": "string"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "RequestResource"
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "security": [
+        {
+            "bearerAuth": []
+        }
+    ]
+}

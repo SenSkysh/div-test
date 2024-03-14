@@ -5,12 +5,28 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class Request extends JsonResource
+/**
+ * @OA\Schema(
+ *  @OA\Xml(name="RequestResource")
+ * )
+ * @OA\Property(format="int64",  property="id"),
+ * @OA\Property(format="string", property="name"),
+ * @OA\Property(format="string", property="email"),
+ * @OA\Property(format="string", property="status")
+ * @OA\Property(format="string", property="message")
+ * @OA\Property(format="string", property="comment")
+ * @OA\Property(format="string", property="created_at")
+ * @OA\Property(format="string", property="updated_at")
+ */
+class RequestResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
+     * 
+
      *
-     * @return array<string, mixed>
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
      */
     public function toArray(HttpRequest $request): array
     {
