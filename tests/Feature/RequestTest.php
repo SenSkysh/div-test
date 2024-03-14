@@ -2,8 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Mail\RequestResolved;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 use App\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -94,7 +96,7 @@ class RequestTest extends TestCase
 
     public function test_the_update(): void
     {
-
+        Mail::fake();
   
         $model = TestModel::factory()->create();
 
@@ -108,6 +110,10 @@ class RequestTest extends TestCase
         $response = $this->actingAs($this->user)->putJson(self::$apiPath . '/'.$model->id, $data);
         $response->assertStatus(200);
         $this->assertDatabaseHas(TestModel::class, $data);
+
+        
+        Mail::assertSent(RequestResolved::class);
+
     }
 
     

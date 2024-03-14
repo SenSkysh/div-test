@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\RequestResolved;
 use App\Models\Request;
 use App\Http\Requests\StoreRequestRequest;
 use App\Http\Requests\UpdateRequestRequest;
@@ -9,6 +10,7 @@ use App\Http\Requests\IndexRequestRequest;
 
 use Illuminate\Http\Request as HttpRequest;
 use App\Http\Resources\Request as RequestResource;
+use Illuminate\Support\Facades\Mail;
 
 class RequestController extends Controller
 {
@@ -54,6 +56,9 @@ class RequestController extends Controller
         $request->status = 'Resolved';
         $request->comment = $validated['comment'];
         $request->saveOrFail();
+
+        // Mail::to($request->email)->send(new RequestResolved($request));
+        Mail::mailer('log')->to($request->email)->send(new RequestResolved($request));
 
         return new RequestResource($request);
     }

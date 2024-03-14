@@ -1,0 +1,4 @@
+Заявка:
+{{$messageText }}
+Ответ:
+{{ $commentText }}
