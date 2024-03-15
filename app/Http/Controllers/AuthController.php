@@ -2,16 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\RequestResolved;
-use App\Models\Request;
-use App\Http\Requests\StoreRequestRequest;
-use App\Http\Requests\UpdateRequestRequest;
-use App\Http\Requests\IndexRequestRequest;
-
 use App\Models\User;
 use Illuminate\Http\Request as HttpRequest;
-use App\Http\Resources\RequestResource;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
