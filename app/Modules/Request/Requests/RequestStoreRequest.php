@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Modules\Request\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * @OA\Schema(
- *      @OA\Xml(name="StoreRequestRequest"),
- *      title="StoreRequestRequest",
+ *      @OA\Xml(name="RequestStoreRequest"),
+ *      title="RequestStoreRequest",
  *      type="object",
  *      required={"name", "email", "message"}
  * )
@@ -15,7 +15,7 @@ use Illuminate\Foundation\Http\FormRequest;
  * @OA\Property(format="string",  property="email"),
  * @OA\Property(format="string",  property="message"),
  */
-class StoreRequestRequest extends FormRequest
+class RequestStoreRequest extends FormRequest
 {
 
     /**

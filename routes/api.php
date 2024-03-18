@@ -16,7 +16,7 @@ use \App\Http\Controllers\AuthController;
 |
 */
 
-Route::post('/sanctum/token', AuthController::class);
+Route::post('/sanctum/token', [AuthController::class, 'getToken']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -26,4 +26,4 @@ Route::apiResource('requests', RequestController::class)->only([
     'index',
     'store',
     'update'
-])->parameters(['request' => 'id']);
+]);

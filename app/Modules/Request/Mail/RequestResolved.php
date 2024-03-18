@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Mail;
+namespace App\Modules\Request\Mail;
 
-use App\Models\Request;
+use App\Modules\Request\DTO\RequestDTO;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
@@ -18,7 +17,7 @@ class RequestResolved extends Mailable
      * Create a new message instance.
      */
     public function __construct(
-        public Request $requestData,
+        public RequestDTO $requestData,
     ) {}
 
     /**

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Modules\User\Models\User;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -30,7 +30,7 @@ class AuthController extends Controller
      *       )
      * )
      */
-    public function __invoke(HttpRequest $request)
+    public function getToken(HttpRequest $request) //не стал переделывать под дто и сервис потому что это только для теста через сваггер
     {
       $request->validate([
         'email' => 'required|email',

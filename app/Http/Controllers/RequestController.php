@@ -2,22 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\RequestResolved;
-use App\Models\Request;
-use App\Http\Requests\StoreRequestRequest;
-use App\Http\Requests\UpdateRequestRequest;
-use App\Http\Requests\IndexRequestRequest;
+use App\Modules\Base\DTO\PaginateParamsDTO;
+use App\Modules\Request\DTO\RequestIndexDTO;
+use App\Modules\Request\DTO\RequestStoreDTO;
+use App\Modules\Request\DTO\RequestResolveDTO;
+use App\Modules\Request\Models\Request;
+use App\Modules\Request\Requests\RequestStoreRequest;
+use App\Modules\Request\Requests\RequestUpdateRequest;
+use App\Modules\Request\Requests\RequestIndexRequest;
 
-use Illuminate\Http\Request as HttpRequest;
-use App\Http\Resources\RequestResource;
-use Illuminate\Support\Facades\Mail;
+use App\Modules\Request\Services\RequestService;
+use App\Modules\Request\Resources\RequestResource;
 
 class RequestController extends Controller
 {
 
-    public function __construct()
+    public function __construct(
+        private RequestService $requestService
+    )
     {
-        $this->authorizeResource(Request::class);
+        $this->authorizeResource(Request::class, Request::class);
     }
     /**
      * @OA\Get(
@@ -63,15 +67,15 @@ class RequestController extends Controller
      *      )
      *     )
      */
-    public function index(IndexRequestRequest $request)
+    public function index(RequestIndexRequest $request)
     {
-        $status = $request->validated('status');
-        $from = $request->validated('from');
-        $to = $request->validated('to');
+        $validated = $request->validated();
+        $dto = new RequestIndexDTO($validated);
+        $paginateParams = PaginateParamsDTO::fromRequest($request);
 
-        $requests = Request::filtered($status, $from, $to)->paginate()->withQueryString();
+        $requests = $this->requestService->getWithFilter($dto, $paginateParams);
 
-        return RequestResource::collection($requests);
+        return  RequestResource::collection($requests);
     }
 
     /**
@@ -80,24 +84,27 @@ class RequestController extends Controller
      *      operationId="storeRequest",
      *      @OA\RequestBody(
      *          required=true,
-     *          @OA\JsonContent(ref="#/components/schemas/StoreRequestRequest")
+     *          @OA\JsonContent(ref="#/components/schemas/RequestStoreRequest")
      *      ),
      *      @OA\Response(
      *          response=201,
      *          description="Successful operation",
-     *          @OA\JsonContent(ref="#/components/schemas/RequestResource")
+     *          @OA\JsonContent(
+     *            @OA\Property(property="data", type="object",
+     *                  ref="#/components/schemas/RequestResource")
+     *             ),
+     *          )
      *       )
      * )
      */
-    public function store(StoreRequestRequest $request)
+    public function store(RequestStoreRequest $request)
     {
         $validated = $request->validated();
+        $dto = new RequestStoreDTO($validated);
 
-        $newRequest = new Request($validated);
+        $newRequest = $this->requestService->storeRequest($dto);
 
-        $newRequest->saveOrFail();
-        $newRequest->refresh();
-        return new RequestResource($newRequest);
+        return (new RequestResource($newRequest))->response()->setStatusCode(201);
     }
 
     /**
@@ -111,26 +118,28 @@ class RequestController extends Controller
      *     ),
      *      @OA\RequestBody(
      *          required=true,
-     *          @OA\JsonContent(ref="#/components/schemas/UpdateRequestRequest")
+     *          @OA\JsonContent(ref="#/components/schemas/RequestUpdateRequest")
      *      ),
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *          @OA\JsonContent(ref="#/components/schemas/RequestResource")
+     *          @OA\JsonContent(
+     *            @OA\Property(property="data", type="object",
+     *                  ref="#/components/schemas/RequestResource")
+     *             ),
+     *          )
      *       )
      * )
      */
-    public function update(UpdateRequestRequest $updateRequest, Request $request)
+    public function update(RequestUpdateRequest $updateRequest, int $id)
     {
-        $validated = $updateRequest->validated();
+        $comment = $updateRequest->validated('comment');
+        $dto = new RequestResolveDTO(
+            id: $id,
+            comment: $comment,
+        );
 
-        $request->status = 'Resolved';
-        $request->comment = $validated['comment'];
-        $request->saveOrFail();
-        $request->refresh();
-
-        // Mail::to($request->email)->send(new RequestResolved($request));
-        Mail::mailer('log')->to($request->email)->send(new RequestResolved($request));
+        $request = $this->requestService->resolveRequest($dto);
 
         return new RequestResource($request);
     }

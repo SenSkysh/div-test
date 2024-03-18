@@ -2,14 +2,17 @@
 
 namespace Tests\Feature;
 
-use App\Mail\RequestResolved;
+
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
-use App\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Models\Request as TestModel;
+
+
+use App\Modules\User\Models\User;
+use App\Modules\Request\Models\Request as TestModel;
+use App\Modules\Request\Mail\RequestResolved;
 
 class RequestTest extends TestCase
 {

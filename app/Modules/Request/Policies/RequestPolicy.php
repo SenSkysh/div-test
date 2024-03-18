@@ -1,10 +1,8 @@
 <?php
 
-namespace App\Policies;
+namespace App\Modules\Request\Policies;
 
-use App\Models\Request;
-use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use App\Modules\User\Models\User;
 
 class RequestPolicy
 {
@@ -13,11 +11,11 @@ class RequestPolicy
      */
     public function viewAny(?User $user): bool
     {
-        if(!isset($user)) {
+        if (!isset ($user)) {
             $user = auth('sanctum')->user();
         }
         // return true;
-        return isset($user);
+        return isset ($user);
     }
 
     /**
@@ -31,13 +29,13 @@ class RequestPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(?User $user, Request $request): bool
+    public function update(?User $user): bool
     {
-        if(!isset($user)) {
+        if (!isset ($user)) {
             $user = auth('sanctum')->user();
         }
         // return true;
-        return isset($user);
+        return isset ($user);
     }
 
 }

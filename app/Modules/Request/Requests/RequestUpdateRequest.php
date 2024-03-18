@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Modules\Request\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * @OA\Schema(
- *      @OA\Xml(name="UpdateRequestRequest"),
- *      title="UpdateRequestRequest",
+ *      @OA\Xml(name="RequestUpdateRequest"),
+ *      title="RequestUpdateRequest",
  *      type="object",
  *      required={"comment"}
  * )
  * @OA\Property(format="string",  property="comment"),
  */
-class UpdateRequestRequest extends FormRequest
+class RequestUpdateRequest extends FormRequest
 {
 
     /**

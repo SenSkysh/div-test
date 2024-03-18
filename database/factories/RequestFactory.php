@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Modules\Request\Models\Request>
  */
 class RequestFactory extends Factory
 {
@@ -27,5 +27,9 @@ class RequestFactory extends Factory
             'message' => fake()->paragraph(),
             'comment' => $status == 'Active' ? null : fake()->paragraph()
         ];
+    }
+
+    public function modelName(){
+        return '\App\Modules\Request\Models\Request';
     }
 }
